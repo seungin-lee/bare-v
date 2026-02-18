@@ -1,3 +1,9 @@
+/*
+ * Original code from https://github.com/ucb-bar/libgloss-htif
+ * Copyright (c) 2019, The Regents of the University of California (Regents).
+ * Licensed under the BSD 3-Clause License.
+ */
+ 
 #ifndef _CHIPYARD_ASM_H
 #define _CHIPYARD_ASM_H
 
