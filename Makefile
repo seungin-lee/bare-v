@@ -9,6 +9,15 @@ LDFLAGS		+=
 
 PLATFORM	?= sifive_u
 APP		?= app/hello-world
+ROOT_DIR	= $(shell pwd)
+PLATFORM_DIR	= $(ROOT_DIR)/platform/$(PLATFORM)
+CORE_DIR	= $(ROOT_DIR)/core
+DRIVERS_DIR	= $(ROOT_DIR)/drivers
+LIB_DIR		= $(ROOT_DIR)/lib
+
+include $(PLATFORM_DIR)/config.mk
+include $(LIB_DIR)/lib.mk
+
 C_SRCS		+= $(wildcard $(APP)/*.c)
 OBJS		+= $(C_SRCS:.c=.o)
 
