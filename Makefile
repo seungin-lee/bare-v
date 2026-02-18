@@ -5,7 +5,7 @@ OBJCOPY		:= $(CROSS_COMPILE)objcopy
 OBJDUMP		:= $(CROSS_COMPILE)objdump
 
 CFLAGS		+= -mcmodel=medany
-LDFLAGS		+= -mcmodel=medany
+LDFLAGS		+=
 
 PLATFORM	?= sifive_u
 APP		?= app/hello-world
