@@ -3,7 +3,7 @@ C_SRCS		+= $(wildcard $(LIB_DIR)/utils/*.c)
 OBJS		+= $(C_SRCS:.c=.o)
 
 LIB_CFLAGS	+= -I$(CORE_DIR)/common/include
-LIB_CFLAGS	+= -I$(DRIVERS_DIR)/include
+LIB_CFLAGS	+= -I$(DRIVER_DIR)/include
 LIB_CFLAGS	+= -I$(LIB_DIR)/sys
 LIB_CFLAGS	+= -I$(LIB_DIR)/utils
 
