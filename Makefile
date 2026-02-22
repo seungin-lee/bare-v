@@ -41,7 +41,7 @@ $(OUTPUT_DIR):
 	$(OBJCOPY) -O binary $< $@
 
 %.elf: $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(CC) $(LDFLAGS) -o $@ $^
 
 %.dump: %.elf
 	$(OBJDUMP) -D $< > $@
