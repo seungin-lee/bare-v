@@ -1,0 +1,1 @@
+APP_CFLAGS	+= -I$(DRIVER_DIR)/include -I$(PLATFORM_DIR)
