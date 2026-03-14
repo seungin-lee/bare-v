@@ -4,7 +4,7 @@ LD		:= $(CROSS_COMPILE)ld
 OBJCOPY		:= $(CROSS_COMPILE)objcopy
 OBJDUMP		:= $(CROSS_COMPILE)objdump
 
-CFLAGS		+= -mcmodel=medany
+CFLAGS		+= -mcmodel=medany -g
 LDFLAGS		+=
 
 PLATFORM	?= sifive_u
@@ -14,13 +14,15 @@ PLATFORM_DIR	= $(ROOT_DIR)/platform/$(PLATFORM)
 CORE_DIR	= $(ROOT_DIR)/core
 DRIVER_DIR	= $(ROOT_DIR)/driver
 LIB_DIR		= $(ROOT_DIR)/lib
+APP_DIR		= $(ROOT_DIR)/$(APP)
 
-include $(PLATFORM_DIR)/config.mk
-include $(LIB_DIR)/lib.mk
+include $(PLATFORM_DIR)/platform.mk
 include $(DRIVER_DIR)/driver.mk
+include $(LIB_DIR)/lib.mk
+include $(APP_DIR)/app.mk
 
-C_SRCS		+= $(wildcard $(APP)/*.c)
-OBJS		+= $(C_SRCS:.c=.o)
+C_SRCS		+= $(wildcard $(APP_DIR)/*.c)
+OBJS		+= $(C_SRCS:.c=.o) $(ASM_SRCS:.S=.o)
 
 TARGET		= $(notdir $(APP))
 OUTPUT_DIR	= output/$(PLATFORM)/$(TARGET)
@@ -38,23 +40,27 @@ all: $(OUTPUT_DIR) $(TARGET_ALL)
 $(OUTPUT_DIR):
 	mkdir -p $@
 
-%.bin: %.elf
+$(TARGET_BIN): $(TARGET_ELF)
 	$(OBJCOPY) -O binary $< $@
 
-%.elf: $(OBJS)
+$(TARGET_ELF): $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^
 
-%.dump: %.elf
+$(TARGET_DUMP): $(TARGET_ELF)
 	$(OBJDUMP) -D $< > $@
 
-%.hex: %.elf
+$(TARGET_HEX): $(TARGET_ELF)
 	$(OBJCOPY) -O ihex $< $@
 
-%.stripped.elf: %.elf
+$(TARGET_STRIP): $(TARGET_ELF)
 	$(OBJCOPY) --strip-all $< $@
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $^
+	$(CC) $(CFLAGS) $(APP_CFLAGS) -c -o $@ $^
+
+sim: $(OUTPUT_DIR) $(TARGET_ALL)
+	qemu-system-riscv64 -M $(PLATFORM) -bios $(TARGET_ELF) \
+	--display none -serial stdio
 
 clean:
 	rm -rf $(OUTPUT_DIR) $(OBJS)

@@ -1,6 +1,5 @@
 C_SRCS		+= $(wildcard $(PLATFORM_DIR)/*.c)
 ASM_SRCS	+= $(wildcard $(PLATFORM_DIR)/*.S)
-OBJS		+= $(C_SRCS:.c=.o) $(ASM_SRCS:.S=.o)
 
 PLATFORM_CFLAGS	+= -I$(CORE_DIR)/common/include
 PLATFORM_CFLAGS	+= -I$(DRIVER_DIR)/include
