@@ -1,32 +1,50 @@
+/*
+ * Copyright (c) 2026, seungin.lee8@gmail.com
+ * Licensed under the BSD 3-Clause License.
+ */
+
 #include <stdint.h>
+#include <stddef.h>
+#include "uart.h"
 
-#define UART_TXDATA		0x00
-#define UART_RXDATA		0x04
-#define UART_TXCTRL		0x08
-#define UART_RXCTRL		0x0c
-#define UART_IE			0x10
-#define UART_IP			0x14
-#define UART_DIV		0x18
+struct uart_regs {
+	volatile uint32_t tx_data;
+	volatile uint32_t rx_data;
+	volatile uint32_t tx_ctrl;
+	volatile uint32_t rx_ctrl;
+	volatile uint32_t ie;
+	volatile uint32_t ip;
+	volatile uint32_t div;
+};
 
-int uart_init(uintptr_t base)
+struct uart_regs *DEBUG_UART = NULL;
+
+void set_debug_uart(struct uart_regs *uart_t)
+{
+	DEBUG_UART = uart_t;
+}
+
+int uart_init(struct uart_regs *uart_t)
 {
 	/* Set baud rate to 115200 bps */
-	*(volatile uint32_t *)(base + UART_DIV) = 0x1a;
+	uart_t->div = 0x1a;
 
 	/* Enable TX and RX */
-	*(volatile uint32_t *)(base + UART_TXCTRL) = 0x1;
-	*(volatile uint32_t *)(base + UART_RXCTRL) = 0x1;
+	uart_t->tx_ctrl = 0x1;
+	uart_t->rx_ctrl = 0x1;
+
+	if (DEBUG_UART == NULL) set_debug_uart(uart_t);
 
 	return 0;
 }
 
-int uart_putc(uintptr_t base, char c)
+int uart_putc(struct uart_regs *uart_t, char c)
 {
 	/* Wait until the TX FIFO is not full */
-	while (*(volatile uint32_t *)(base + UART_TXDATA) & 0x80000000);
+	while (uart_t->tx_data & 0x80000000);
 
 	/* Write the character to the TXDATA register */
-	*(volatile uint32_t *)(base + UART_TXDATA) = c;
+	uart_t->tx_data = c;
 
 	return 0;
 }

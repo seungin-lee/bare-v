@@ -3,19 +3,21 @@
 
 #include "uart.h"
 #include "platform.h"
+
 int main(){
-	uart_init(UART0_BASE);
-	uart_putc(UART0_BASE, 'H');
-	uart_putc(UART0_BASE, 'E');
-	uart_putc(UART0_BASE, 'L');
-	uart_putc(UART0_BASE, 'L');
-	uart_putc(UART0_BASE, 'O');
-	uart_putc(UART0_BASE, ' ');
-	uart_putc(UART0_BASE, 'W');
-	uart_putc(UART0_BASE, 'O');
-	uart_putc(UART0_BASE, 'R');
-	uart_putc(UART0_BASE, 'L');
-	uart_putc(UART0_BASE, 'D');
-	uart_putc(UART0_BASE, '!');
+	struct uart_regs* uart_t = (struct uart_regs*)UART0_BASE;
+	uart_init(uart_t);
+	uart_putc(uart_t, 'H');
+	uart_putc(uart_t, 'E');
+	uart_putc(uart_t, 'L');
+	uart_putc(uart_t, 'L');
+	uart_putc(uart_t, 'O');
+	uart_putc(uart_t, ' ');
+	uart_putc(uart_t, 'W');
+	uart_putc(uart_t, 'O');
+	uart_putc(uart_t, 'R');
+	uart_putc(uart_t, 'L');
+	uart_putc(uart_t, 'D');
+	uart_putc(uart_t, '!');
 	return 0;
 }
