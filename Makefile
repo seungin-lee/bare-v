@@ -34,6 +34,8 @@ TARGET_STRIP	= $(OUTPUT_DIR)/$(TARGET).stripped.elf
 TARGET_ALL	= $(TARGET_BIN) $(TARGET_ELF) $(TARGET_DUMP) $(TARGET_HEX) \
 		  $(TARGET_STRIP)
 
+QEMU_DEBUG	= -s -S
+
 .SECONDARY:
 all: $(OUTPUT_DIR) $(TARGET_ALL)
 
@@ -61,6 +63,16 @@ $(TARGET_STRIP): $(TARGET_ELF)
 sim: $(OUTPUT_DIR) $(TARGET_ALL)
 	qemu-system-riscv64 -M $(PLATFORM) -bios $(TARGET_ELF) \
 	--display none -serial stdio
+
+sim_debug: $(OUTPUT_DIR) $(TARGET_ALL)
+	xterm -title "$(TARGET)" -e \
+	"qemu-system-riscv64 -M $(PLATFORM) -bios $(TARGET_ELF) \
+	--display none -serial stdio $(QEMU_DEBUG)" &
+
+gdb:
+	$(CROSS_COMPILE)gdb -tui \
+	-ex 'target remote :1234' \
+	-ex 'file $(TARGET_ELF)'
 
 clean:
 	rm -rf $(OUTPUT_DIR) $(OBJS)
